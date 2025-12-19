@@ -1,0 +1,17 @@
+node_xml_sitemap.sitemap_node_xml:
+  path: '/node/{type}/sitemap.xml'
+  defaults:
+    _controller: '\Drupal\node_xml_sitemap\Controller\NodeXmlSitemapController::renderNodeSitemapXml'
+    _title: 'Node Sitemap XML'
+  requirements:
+    # This helps search engines find sitemap automatically.
+    _access: 'TRUE'
+  options:
+    no_cache: 'TRUE'
+node_xml_sitemap.form:
+  path: '/admin/node-sitemap-listing'
+  defaults:
+    _form: '\Drupal\node_xml_sitemap\Form\NodeSitemapListForm'
+    _title: 'Node Sitemap URLs'
+  requirements:
+    _permission: 'administer content types'

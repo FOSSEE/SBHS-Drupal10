@@ -1,0 +1,90 @@
+<?php
+
+/**
+ * @file
+ * Primary module hooks for Locale Deploy module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Default local location of gettext files.
+ *
+ * @see \Drupal\locale_deploy\Commands\LocaleDeployCommands::getTranslations()
+ */
+define('LOCALE_DEPLOY_TRANSLATION_DEFAULT_SERVER_PATTERN', 'translations://%project.%language.po');
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * This function is in the locale module namespace to avoid collisions with
+ * Drush deploy hooks. A bit cheeky but given the module depends on locale and
+ * locale provides the form probably okay.
+ */
+function locale_form_locale_translate_settings_alter(array &$form, FormStateInterface $form_state, string $form_id): void {
+  // Prevent the user from changing values set in locale_deploy_install().
+  $form['overwrite']['#disabled'] = $form['use_source']['#disabled'] = $form['update_interval_days']['#disabled'] = TRUE;
+  $form['overwrite']['#description'] = $form['use_source']['#description'] = $form['update_interval_days']['#description'] = t('This setting is managed by the locale deploy module and its Drush commands.');
+}
+
+/**
+ * Implements hook_locale_translation_projects_alter().
+ *
+ * Adds a project to ensure custom translations are imported.
+ *
+ * This function is in the locale module namespace to avoid collisions with
+ * Drush deploy hooks. A bit cheeky but given the module depends on locale and
+ * locale provides the hook we are probably okay.
+ */
+function locale_locale_translation_projects_alter(&$projects) {
+  // The custom translations are located in a sub folder.
+  $projects['locale_deploy.custom'] = [
+    'info' => [
+      'interface translation server pattern' => 'translations://custom/custom.%language.po',
+      'name' => 'Custom code for your project',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_module_implements_alter().
+ *
+ * This function is in the locale module namespace to avoid collisions with
+ * Drush deploy hooks. A bit cheeky but given the module depends on locale and
+ * locale provides the hook we are altering so probably okay.
+ */
+function locale_module_implements_alter(&$implementations, $hook) {
+  if ($hook === 'locale_translation_projects_alter') {
+    // Move our hook_locale_translation_projects_alter() implementation to the
+    // end of the list so that the custom translations are always the last ones
+    // to be processed. Note this also ensures the tests pass because
+    // locale_test_locale_translation_projects_alter() completely replaces the
+    // projects array. Moving this to the end ensures the custom translations
+    // are available during testing.
+    $group = $implementations['locale'];
+    unset($implementations['locale']);
+    $implementations['locale'] = $group;
+  }
+}
+
+/**
+ * Updates locale.settings to this module's expected state.
+ *
+ * This is a separate function to make it easy to run using Drush in case they
+ * diverge from the expected state.
+ */
+function _locale_deploy_config_fix(): void {
+  \Drupal::configFactory()->getEditable('locale.settings')
+    // Ensure locale does not update from remote sources.
+    ->set('translation.use_source', LOCALE_TRANSLATION_USE_SOURCE_LOCAL)
+    // Ensure that default server pattern points to local files.
+    ->set('translation.default_server_pattern', LOCALE_DEPLOY_TRANSLATION_DEFAULT_SERVER_PATTERN)
+    // Ensure locale is not updated on cron.
+    ->set('translation.update_interval_days', 0)
+    // Ensure that custom translations can override any core or module
+    // translations.
+    ->set('translation.overwrite_not_customized', TRUE)
+    // Ensure customized translations are not overwritten.
+    ->set('translation.overwrite_customized', FALSE)
+    ->save();
+}

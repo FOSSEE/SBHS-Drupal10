@@ -1,0 +1,10 @@
+tracking:
+  js:
+    js/google_tag_events.js:
+      weight: 0
+  dependencies:
+    - core/jquery
+    - core/drupal
+    - core/js-cookie
+    - core/drupalSettings
+    - core/once

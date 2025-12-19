@@ -1,0 +1,3 @@
+name: Potx test
+type: module
+package: Testing

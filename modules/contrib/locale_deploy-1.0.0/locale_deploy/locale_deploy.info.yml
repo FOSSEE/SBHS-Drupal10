@@ -1,0 +1,12 @@
+name: Locale Deploy
+type: module
+description: Makes it easy to deploy locale translations for core, contrib and custom code
+package: Multilingual
+core_version_requirement: ^10 || ^11
+dependencies:
+  - drupal:locale
+
+# Information added by Drupal.org packaging script on 2025-01-15
+version: '1.0.0'
+project: 'locale_deploy'
+datestamp: 1736940911

@@ -1,0 +1,13 @@
+name: Node XML Sitemap
+type: module
+description: 'Node based XML Sitemap.'
+package: XML Sitemap
+core_version_requirement: ^10 || ^11
+configure: node_xml_sitemap.form
+dependencies:
+  - xmlsitemap:xmlsitemap
+
+# Information added by Drupal.org packaging script on 2024-06-21
+version: '1.0.1'
+project: 'node_xml_sitemap'
+datestamp: 1718951420

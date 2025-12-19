@@ -1,0 +1,6 @@
+services:
+  locale_deploy.locale_project:
+    public: false
+    class: \Drupal\locale_deploy\LocaleProject
+    decorates: locale.project
+    arguments: ['@locale_deploy.locale_project.inner']

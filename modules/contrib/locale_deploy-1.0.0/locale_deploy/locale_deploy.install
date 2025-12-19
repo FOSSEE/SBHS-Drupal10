@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions for the Locale Deploy module.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function locale_deploy_install(bool $is_syncing): void {
+  if (!$is_syncing) {
+    _locale_deploy_config_fix();
+  }
+}
+
+/**
+ * Implements hook_requirements().
+ */
+function locale_deploy_requirements(string $phase): array {
+  $requirements = [];
+
+  if ($phase === 'runtime' || $phase === 'update') {
+    $locale_config = \Drupal::configFactory()->get('locale.settings');
+    if (
+      // Should be using local translations only.
+      $locale_config->get('translation.use_source') !== LOCALE_TRANSLATION_USE_SOURCE_LOCAL ||
+      // Should not run on cron.
+      $locale_config->get('translation.update_interval_days') !== 0 ||
+      // The server pattern should not be customized.
+      $locale_config->get('translation.default_server_pattern') !== LOCALE_DEPLOY_TRANSLATION_DEFAULT_SERVER_PATTERN ||
+      // Should not overwrite customized translations.
+      $locale_config->get('translation.overwrite_customized') ||
+      // Should overwrite non-customized translations.
+      !$locale_config->get('translation.overwrite_not_customized')
+    ) {
+      $requirements['locale_deploy_status'] = [
+        'title' => t('Locale Deploy status'),
+        'value' => t('@config configuration needs fixing', ['@config' => 'locale.settings']),
+        'severity' => REQUIREMENT_ERROR,
+        'description' => t('Fix settings by running the following Drush command: @command', ['@command' => 'drush php:eval "_locale_deploy_config_fix();"']),
+      ];
+    }
+  }
+
+  return $requirements;
+}

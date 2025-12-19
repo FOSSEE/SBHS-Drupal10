@@ -1,0 +1,26 @@
+<?php
+
+/**
+ * @file
+ * Node based node_xml_sitemap module.
+ */
+
+ use Drupal\Core\Routing\RouteMatchInterface;
+
+ /**
+ * Implements hook_help().
+ */
+function node_xml_sitemap_help($route_name, RouteMatchInterface $route_match) {
+  $output = '';
+
+  switch ($route_name) {
+    case 'help.page.node_xml_sitemap':
+
+      $output = '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Node XML Sitemap automatically creates a sitemap url for the content type. This helps search engines keep their search results up to date.') . '</p>';
+      $output .= '<h3>' . t('Usage') . '</h3>';
+      $output .= '<p>' . t("Copy the sie map url and page in robot.txt of Google console at /admin/node-sitemap-listing. Your can view your site's sitemap at http://yoursite.com/node/page/sitemap.xml.") . '</p>';
+      $output .= '<p>' . t('It is highly recommended that you have clean URLs enabled for this project.') . '</p>';
+      return $output;
+  }
+}

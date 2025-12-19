@@ -1,0 +1,11 @@
+name: 'Google Tag Manager Events Test'
+type: module
+description: 'Testing module for GTM events functionality.'
+package: Testing
+dependencies:
+  - google_tag_events:google_tag_events
+
+# Information added by Drupal.org packaging script on 2024-01-23
+version: '3.0.0'
+project: 'google_tag_events'
+datestamp: 1705997409

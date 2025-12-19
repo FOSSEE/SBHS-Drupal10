@@ -1,0 +1,10 @@
+name: 'Locale deploy test'
+type: module
+description: 'Support module for locale_deploy module testing.'
+package: Testing
+hidden: true
+
+# Information added by Drupal.org packaging script on 2025-01-15
+version: '1.0.0'
+project: 'locale_deploy'
+datestamp: 1736940911

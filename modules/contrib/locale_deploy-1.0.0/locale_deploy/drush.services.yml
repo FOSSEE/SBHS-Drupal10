@@ -1,0 +1,6 @@
+services:
+  locale_deploy.commands:
+    class: \Drupal\locale_deploy\Commands\LocaleDeployCommands
+    arguments: ['@language_manager', '@module_handler', '@config.factory', '@file_system']
+    tags:
+      - { name: drush.command }

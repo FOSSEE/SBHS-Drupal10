@@ -1,0 +1,20 @@
+<?php
+
+/**
+ * @file
+ * Helps test the Locale Deploy module.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Implements hook_locale_translation_projects_alter().
+ */
+function localedeploy_test_locale_translation_projects_alter(&$projects) {
+  $projects['zzzzz.locale_test'] = [
+    'info' => [
+      'interface translation server pattern' => 'translations://custom/zzzzz.%language.po',
+      'name' => 'Testing ordering of Locale projects',
+    ],
+  ];
+}

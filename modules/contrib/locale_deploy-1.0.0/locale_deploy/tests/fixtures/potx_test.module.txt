@@ -1,0 +1,20 @@
+<?php
+// @codingStandardsIgnoreFile
+
+/**
+ * @file
+ * File used purely to test the parser in potx. This file has a .txt
+ *   extension so that it does not fail linting tests run by continuous
+ *   integration.
+ */
+
+use Drupal\Core\StringTranslation\TranslatableMarkup;
+
+/**
+ * Test function.
+ */
+function potx_test_example() {
+  // Test with short format array styles mixed with other tokens.
+  $a = new TranslatableMarkup('TranslatableMarkup string');
+  $b = new TranslatableMarkup('Another translatableMarkup string');
+}

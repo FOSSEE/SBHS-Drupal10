@@ -1,0 +1,13 @@
+<?php declare(strict_types = 1);
+
+$ignoreErrors = [];
+$ignoreErrors[] = [
+	// identifier: classConstant.deprecated
+	'message' => '#^Fetching deprecated class constant EXISTS_REPLACE of interface Drupal\\\\Core\\\\File\\\\FileSystemInterface\\:
+in drupal\\:10\\.3\\.0 and is removed from drupal\\:12\\.0\\.0\\. Use
+\\\\Drupal\\\\Core\\\\File\\\\FileExists\\:\\:Replace instead\\.$#',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Commands/LocaleDeployCommands.php',
+];
+
+return ['parameters' => ['ignoreErrors' => $ignoreErrors]];

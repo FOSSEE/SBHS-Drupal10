@@ -1,0 +1,66 @@
+<?php
+
+/**
+ * @file
+ * Contains google_tag_events.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function google_tag_events_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the google_tag_events module.
+    case 'help.page.google_tag_events':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The Google Tag Manager: Events module provides
+       API to push events to GTM Datalayer from PHP.') . '</p>';
+
+      return $output;
+  }
+}
+
+/**
+ * Get GTM events service.
+ *
+ * @return \Drupal\google_tag_events\GoogleTagEvents
+ *   GTM events service.
+ */
+function google_tag_events_service() {
+  return \Drupal::service('google_tag_events');
+}
+
+/**
+ * Implements hook_page_attachments().
+ */
+function google_tag_events_page_attachments(array &$attachments) {
+  $attachments['#attached']['library'][] = 'google_tag_events/tracking';
+  // Add events to drupal settings.
+  google_tag_events_service()->processCurrentEvents($attachments);
+}
+
+/**
+ * Implements hook_ajax_render_alter().
+ */
+function google_tag_events_ajax_render_alter(array &$data) {
+  // Add events to drupal settings.
+  // Set it first to avoid issues with invoking attachment behavior
+  // after executing commands.
+  array_unshift($data, google_tag_events_service()->processAjaxCommandCurrentEvents()->render());
+}
+
+/**
+ * Implements hook_page_bottom().
+ */
+function google_tag_events_page_bottom(array &$page_bottom) {
+  $page_bottom['google_tag_events'] = [
+    '#lazy_builder' => [
+      'google_tag_events.lazy_builder:getEvents',
+      [],
+    ],
+    '#create_placeholder' => TRUE,
+  ];
+}
